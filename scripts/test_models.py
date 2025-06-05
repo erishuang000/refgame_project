@@ -38,7 +38,8 @@
 #     test_model_cpm("/puhome/23063003r/refgame_project/models/CPM-Generate", "一个红色的东西从高处落下。", device)
 
 
-from transformers import AutoTokenizer, AutoModelWithLMHead, AdamW
+from transformers import AutoTokenizer, AutoModelWithLMHead
+from torch.optim import AdamW
 import torch
 
 # 路径根据你的本地模型位置修改
