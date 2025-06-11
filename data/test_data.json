@@ -8,5 +8,95 @@
       "A red car drove down the street."
     ],
     "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "小狗正在追球。",
+    "correct_english_sentence_raw": "The puppy is chasing the ball.",
+    "candidate_english_sentences_raw": [
+      "The puppy is chasing the ball.",
+      "The bird is singing loudly.",
+      "The book is on the shelf."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "天空是蓝色的。",
+    "correct_english_sentence_raw": "The sky is blue.",
+    "candidate_english_sentences_raw": [
+      "The sky is blue.",
+      "The grass is green.",
+      "The car is red."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "她在看书。",
+    "correct_english_sentence_raw": "She is reading a book.",
+    "candidate_english_sentences_raw": [
+      "He is playing games.",
+      "She is reading a book.",
+      "They are walking home."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "猫睡在沙发上。",
+    "correct_english_sentence_raw": "The cat is sleeping on the sofa.",
+    "candidate_english_sentences_raw": [
+      "The dog is barking loudly.",
+      "The cat is sleeping on the sofa.",
+      "The child is drawing a picture."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "孩子们在公园玩耍。",
+    "correct_english_sentence_raw": "Children are playing in the park.",
+    "candidate_english_sentences_raw": [
+      "Adults are working hard.",
+      "Children are playing in the park.",
+      "Birds are flying high."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "太阳从东方升起。",
+    "correct_english_sentence_raw": "The sun rises in the east.",
+    "candidate_english_sentences_raw": [
+      "The moon sets in the west.",
+      "The sun rises in the east.",
+      "The stars are shining brightly."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "她喜欢听音乐。",
+    "correct_english_sentence_raw": "She likes listening to music.",
+    "candidate_english_sentences_raw": [
+      "He likes watching movies.",
+      "She likes listening to music.",
+      "They enjoy cooking."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "咖啡很烫。",
+    "correct_english_sentence_raw": "The coffee is hot.",
+    "candidate_english_sentences_raw": [
+      "The tea is cold.",
+      "The water is warm.",
+      "The coffee is hot."
+    ],
+    "correct_candidate_index": 2
+  },
+  {
+    "target_sentence_chinese_raw": "我饿了，想吃东西。",
+    "correct_english_sentence_raw": "I am hungry and want to eat something.",
+    "candidate_english_sentences_raw": [
+      "I am thirsty and want to drink water.",
+      "I am tired and want to sleep.",
+      "I am hungry and want to eat something."
+    ],
+    "correct_candidate_index": 2
   }
 ]
