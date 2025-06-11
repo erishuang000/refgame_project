@@ -7,7 +7,7 @@ from torch.optim import AdamW
 # --- 配置 ---
 MODEL_PATH = "/puhome/23063003r/refgame_project/models/gpt2" # 本地 GPT-2 模型路径
 # 注意：这里修改为你的 data.json 路径
-DATA_FILE = "/hpc2/puhome/23063003r/refgame_project/data/data_test.json" # 模拟数据库文件
+DATA_FILE = "/hpc2/puhome/23063003r/refgame_project/data/test_data.json" # 模拟数据库文件
 D_HIDDEN = 768 # GPT-2的隐藏层维度
 
 # 定义奖励和惩罚值（可以根据实验调整）
