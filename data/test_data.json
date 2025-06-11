@@ -1,0 +1,12 @@
+[
+  {
+    "target_sentence_chinese_raw": "一个苹果掉到了地上。",
+    "correct_english_sentence_raw": "An apple fell on the ground.",
+    "candidate_english_sentences_raw": [
+      "An apple fell on the ground.",
+      "The cat jumped on the table.",
+      "A red car drove down the street."
+    ],
+    "correct_candidate_index": 0
+  }
+]
