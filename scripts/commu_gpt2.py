@@ -1,7 +1,8 @@
 import torch
-from transformers import AutoTokenizer, GPT2Model, AdamW
+from transformers import AutoTokenizer, GPT2Model
 import json
 import torch.nn.functional as F
+from torch.optim import AdamW 
 
 # --- 配置 ---
 MODEL_PATH = "/puhome/23063003r/refgame_project/models/gpt2" # 本地 GPT-2 模型路径
