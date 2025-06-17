@@ -1,0 +1,102 @@
+[
+  {
+    "target_sentence_chinese_raw": "為健康戒了煙。",
+    "correct_english_sentence_raw": "I gave up smoking for the sake of my health.",
+    "candidate_english_sentences_raw": [
+      "I left Boston three years ago and haven't been back since.",
+      "I gave up smoking for the sake of my health.",
+      "Tom had a very difficult childhood."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "医生们警告我们可能的危险。",
+    "correct_english_sentence_raw": "Doctors warn us of possible danger.",
+    "candidate_english_sentences_raw": [
+      "Doctors warn us of possible danger.",
+      "It wasn't until around midday that he showed his face.",
+      "Tom and Mary said they didn't think that would happen today."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "這隻腕表需要修理。",
+    "correct_english_sentence_raw": "This watch has to be repaired.",
+    "candidate_english_sentences_raw": [
+      "Both Tom and Mary said they thought it probably wouldn't snow.",
+      "Are you three hungry?",
+      "This watch has to be repaired."
+    ],
+    "correct_candidate_index": 2
+  },
+  {
+    "target_sentence_chinese_raw": "我感覺不太好，我該回家。",
+    "correct_english_sentence_raw": "I don't feel very well. I should go home.",
+    "candidate_english_sentences_raw": [
+      "I don't feel very well. I should go home.",
+      "Sami set up the tables and chairs.",
+      "There's no reason to feel embarrassed. Your pronunciation is generally correct."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "我无所谓。",
+    "correct_english_sentence_raw": "I don't mind.",
+    "candidate_english_sentences_raw": [
+      "We are prepared to help Tom in case he needs it.",
+      "I don't mind.",
+      "I might be able to get you a couple of tickets."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "我是个学生。",
+    "correct_english_sentence_raw": "I'm a student.",
+    "candidate_english_sentences_raw": [
+      "Tom told me that he thought Mary was trustworthy.",
+      "I'm a student.",
+      "She calculates as quickly as any other student."
+    ],
+    "correct_candidate_index": 1
+  },
+  {
+    "target_sentence_chinese_raw": "请再说一遍。",
+    "correct_english_sentence_raw": "Say it again, please.",
+    "candidate_english_sentences_raw": [
+      "Say it again, please.",
+      "Sami called a tow truck.",
+      "I deserve the best in life because I work hard every day."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "微風在湖面上掀起了一絲絲漣漪。",
+    "correct_english_sentence_raw": "A gentle wind made ripples on the surface of the pond.",
+    "candidate_english_sentences_raw": [
+      "A gentle wind made ripples on the surface of the pond.",
+      "A diplomatic passport was issued for him.",
+      "There's a supermarket on that corner."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "这朵花散发出强烈的香味。",
+    "correct_english_sentence_raw": "This flower gives off a strong fragrance.",
+    "candidate_english_sentences_raw": [
+      "This flower gives off a strong fragrance.",
+      "Fyodor set up camp quickly.",
+      "The Kabyle dress was made in the nick of time."
+    ],
+    "correct_candidate_index": 0
+  },
+  {
+    "target_sentence_chinese_raw": "美国是一个民主国家。",
+    "correct_english_sentence_raw": "The United States of America is a democratic country.",
+    "candidate_english_sentences_raw": [
+      "The United States of America is a democratic country.",
+      "Rima and Skura also worked at a restaurant in the evening.",
+      "Mary excused herself and left the room."
+    ],
+    "correct_candidate_index": 0
+  }
+]
