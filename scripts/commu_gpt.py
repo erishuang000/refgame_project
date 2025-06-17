@@ -72,6 +72,7 @@ print(f"\n--- 准备进行 {len(all_game_rounds)} 轮游戏 ---")
 total_loss_sum = 0.0
 correct_predictions_count = 0
 total_rounds = len(all_game_rounds)
+print("total_rounds: ",total_rounds)
 
 # 循环进行每一轮游戏
 for i, game_round in enumerate(all_game_rounds):
