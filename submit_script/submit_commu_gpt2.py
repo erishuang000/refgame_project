@@ -6,8 +6,8 @@
 #SBATCH --cpus-per-task=4                 # 每个任务使用4个CPU核心
 #SBATCH --mem=8G                          # 分配内存
 #SBATCH --time=08:00:00                   # 最长运行时间
-#SBATCH --output=logs/make_dataset_%j.out # 标准输出
-#SBATCH --error=logs/make_dataset_%j.err  # 错误日志
+#SBATCH --output=logs/commu_%j.out # 标准输出
+#SBATCH --error=logs/commu_%j.err  # 错误日志
 
 echo "🚀 作业开始于: $(date)"
 echo "📌 节点: $(hostname)"
