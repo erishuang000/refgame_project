@@ -12,7 +12,7 @@ LINKS_FILE = os.path.join(DATA_DIR, "links.tar.bz2")
 OUTPUT_JSON_FILE = os.path.join(DATA_DIR, "generated_game_data.json")
 
 NUM_CANDIDATES = 3  # 每个回合的英文候选句子数量 (1个正确 + N-1个干扰)
-NUM_SAMPLES_TO_GENERATE = 10 # 想要生成的游戏回合数。如果None，则生成所有可能的简单句对。
+NUM_SAMPLES_TO_GENERATE = 3000 # 想要生成的游戏回合数。如果None，则生成所有可能的简单句对。
 MIN_SENTENCE_LEN = 3 # 句子的最小词数（英文）或字符数（中文）
 MAX_SENTENCE_LEN = 15 # 句子的最大词数（英文）或字符数（中文）
 
