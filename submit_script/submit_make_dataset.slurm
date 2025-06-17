@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=make_dataset           # 任务名
-#SBATCH --partition=compute               # 分区名（如果有别的分区请替换）
+#SBATCH --partition=h07q1               # 分区名（如果有别的分区请替换）
 #SBATCH --nodes=1                         # 节点数
 #SBATCH --ntasks=1                        # 任务数
 #SBATCH --cpus-per-task=4                 # 每个任务使用4个CPU核心
