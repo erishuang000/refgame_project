@@ -76,10 +76,11 @@ print("total_rounds: ",total_rounds)
 
 # 循环进行每一轮游戏
 for i, game_round in enumerate(all_game_rounds):
-    print(f"\n--- 游戏回合 {i + 1}/{total_rounds} ---")
-    print(f"🎯 目标中文句子 (CPM '说'): {game_round['target_sentence_chinese_raw']}")
-    print(f"📚 候选英文句子 (Agent B 选择): {game_round['candidate_english_sentences_raw']}")
-    print(f"✅ 正确索引: {game_round['correct_candidate_index']}")
+    if (i + 1) % 100 == 0 or i == 0 or (i + 1) == total_rounds:
+        print(f"\n--- 游戏回合 {i + 1}/{total_rounds} ---")
+        print(f"🎯 目标中文句子 (CPM '说'): {game_round['target_sentence_chinese_raw']}")
+        print(f"📚 候选英文句子 (Agent B 选择): {game_round['candidate_english_sentences_raw']}")
+        print(f"✅ 正确索引: {game_round['correct_candidate_index']}")
 
     # 6. Agent A (CPM 视角) '说' (提供中文句子作为乱码源)
     cpm_spoken_chinese_sentence = game_round['target_sentence_chinese_raw']
@@ -105,8 +106,9 @@ for i, game_round in enumerate(all_game_rounds):
     similarities = F.cosine_similarity(semantic_vector_B_from_A, semantic_vectors_B_candidates, dim=1)
     predicted_index = torch.argmax(similarities).item()
 
-    print(f"🤔 相似度得分 (越高越相似): {similarities.tolist()}")
-    print(f"🔮 Agent B 猜测的索引: {predicted_index}")
+    if (i + 1) % 100 == 0 or i == 0 or (i + 1) == total_rounds:
+        print(f"🤔 相似度得分 (越高越相似): {similarities.tolist()}")
+        print(f"🔮 Agent B 猜测的索引: {predicted_index}")
 
     # 10. 反馈与权重更新 (Agent B 学习)
     correct_index_tensor = torch.tensor([game_round['correct_candidate_index']], device=similarities.device)
@@ -135,10 +137,10 @@ for i, game_round in enumerate(all_game_rounds):
     total_loss_sum += loss.item()
     if is_correct:
         correct_predictions_count += 1
-
-    print(f"📉 本轮游戏最终损失: {loss.item():.4f}")
-    print(f"🔍 Embedding (word token embeddings) 改变量: {diff:.6f}")
-    print(f"✨ Agent B 最终猜测结果: {is_correct}")
+    if (i + 1) % 100 == 0 or i == 0 or (i + 1) == total_rounds:
+        print(f"📉 本轮游戏最终损失: {loss.item():.4f}")
+        print(f"🔍 Embedding (word token embeddings) 改变量: {diff:.6f}")
+        print(f"✨ Agent B 最终猜测结果: {is_correct}")
 
     # --- 记录本轮数据 ---
     round_data = {
@@ -177,7 +179,7 @@ output_data = {
     "per_round_metrics": per_round_metrics
 }
 
-output_file_path = os.path.join(OUTPUT_DIR, "training_results.json")
+output_file_path = os.path.join(OUTPUT_DIR, "training_results_15000.json")
 with open(output_file_path, 'w', encoding='utf-8') as f:
     json.dump(output_data, f, ensure_ascii=False, indent=2)
 

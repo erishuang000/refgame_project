@@ -69,6 +69,10 @@ class AgentBListener(torch.nn.Module):
     def __init__(self, model_path, all_chinese_chars, hidden_dim):
         super().__init__()
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        # --- 添加这一行来设置 pad_token ---
+        if self.tokenizer.pad_token is None: # 检查是否已经有pad_token，避免重复设置
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        # --- 结束添加 ---
         self.model = GPT2Model.from_pretrained(model_path)
 
         # 扩展 tokenizer 并调整 embedding 层

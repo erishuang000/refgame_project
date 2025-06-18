@@ -134,10 +134,10 @@ for i, game_round in enumerate(all_game_rounds):
     total_loss_sum += loss.item()
     if is_correct:
         correct_predictions_count += 1
-
-    print(f"📉 本轮游戏最终损失: {loss.item():.4f}")
-    print(f"🔍 Embedding (word token embeddings) 改变量: {diff:.6f}")
-    print(f"✨ Agent B 最终猜测结果: {is_correct}")
+    if (i + 1) % 100 == 0 or i == 0 or (i + 1) == total_rounds:
+        print(f"📉 本轮游戏最终损失: {loss.item():.4f}")
+        print(f"🔍 Embedding (word token embeddings) 改变量: {diff:.6f}")
+        print(f"✨ Agent B 最终猜测结果: {is_correct}")
 
 # --- 10 轮游戏结束，汇总结果 ---
 print("\n--- 10 轮游戏总结 ---")
