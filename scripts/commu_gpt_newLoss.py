@@ -43,24 +43,34 @@ def listener_mse_reciprocal_loss(
     Returns:
         torch.Tensor: 计算出的损失值。
     """
+    print(f"DEBUG: semantic_vector_from_agent_A shape: {semantic_vector_from_agent_A.shape}, dtype: {semantic_vector_from_agent_A.dtype}")
+    print(f"DEBUG: semantic_vectors_candidates_B shape: {semantic_vectors_candidates_B.shape}, dtype: {semantic_vectors_candidates_B.dtype}")
+    print(f"DEBUG: correct_candidate_index shape: {correct_candidate_index.shape}, dtype: {correct_candidate_index.dtype}")
+
     # 确保 Agent A 向量维度可以广播到候选向量
     # expanded_vector_A 形状变为 (batch_size, 1, D_HIDDEN)
     expanded_vector_A = semantic_vector_from_agent_A.unsqueeze(1)
+    print(f"DEBUG: expanded_vector_A shape: {expanded_vector_A.shape}")
 
     # 计算 (E_EN^B(m_hat) - E_IMG^B(i_k))^2，即均方差的平方部分
     # 结果形状: (batch_size, num_candidates, D_HIDDEN)
     squared_diff = (expanded_vector_A - semantic_vectors_candidates_B).pow(2)
+    print(f"DEBUG: squared_diff shape: {squared_diff.shape}")
 
     # 对特征维度求和，得到每个候选的 MSE 距离
     # 结果形状: (batch_size, num_candidates)
     mse_distances = squared_diff.sum(dim=-1)
+    print(f"DEBUG: mse_distances shape: {mse_distances.shape}")
 
     # 论文中的 logits 是 MSE 的倒数，添加 epsilon 避免除零
     logits = 1 / (mse_distances + epsilon)
+    print(f"DEBUG: logits shape: {logits.shape}")
 
     # 损失函数是 -log(softmax(logits))，F.cross_entropy 内部包含了 log_softmax
     # F.cross_entropy 期望 logits (N, C) 和 targets (N)
+    # N 是 batch_size, C 是 num_candidates
     loss = F.cross_entropy(logits, correct_candidate_index)
+    print(f"DEBUG: Final loss calculated.")
 
     return loss
 
