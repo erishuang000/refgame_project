@@ -7,7 +7,7 @@ import os # 导入 os 模块用于路径操作
 
 # --- 配置 ---
 MODEL_PATH = "/puhome/23063003r/refgame_project/models/gpt2" # 本地 GPT-2 模型路径
-DATA_FILE = "/puhome/23063003r/refgame_project/data/generated_game_data.json" # 模拟数据库文件
+DATA_FILE = "/puhome/23063003r/refgame_project/data/generated_game_data.json"  # 模拟数据库文件
 OUTPUT_DIR = "/puhome/23063003r/refgame_project/output/" # 新增：输出文件存放目录
 D_HIDDEN = 768 # GPT-2的隐藏层维度
 
