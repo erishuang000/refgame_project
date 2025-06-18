@@ -279,7 +279,7 @@ class GameTrainer:
         if not os.path.exists(self.config.OUTPUT_DIR):
             os.makedirs(self.config.OUTPUT_DIR)
 
-        output_file_path = os.path.join(self.config.OUTPUT_DIR, "training_results.json")
+        output_file_path = os.path.join(self.config.OUTPUT_DIR, "training_results_newLoss.json")
         with open(output_file_path, 'w', encoding='utf-8') as f:
             json.dump(output_data, f, ensure_ascii=False, indent=2)
 
