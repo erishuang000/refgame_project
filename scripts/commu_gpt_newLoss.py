@@ -166,19 +166,20 @@ class GameTrainer:
         self.total_loss_sum = 0.0
         self.correct_predictions_count = 0
 
-    def train_one_round(self, game_round: dict, round_idx: int, total_rounds: int):
+    def train_one_round(self, game_round: dict, round_idx: int, total_rounds: int): # game_round 现在是原始字典
         self.optimizer.zero_grad()
 
-        # 1. Agent A (CPM 视角) '说' (提供中文句子作为乱码源)
         cpm_spoken_chinese_sentence = game_round['target_sentence_chinese_raw']
 
-        # 2. Agent B (GPT-2) 处理中文乱码输入及英文候选句子
-        # semantic_vector_B_from_A: (1, D_HIDDEN)
-        # semantic_vectors_B_candidates: (1, num_candidates, D_HIDDEN)
+        # 1. Agent B (GPT-2) 处理中文乱码输入及英文候选句子
+        # inputs_cn_symbolic_raw 应该是 ['句子'] (列表包含一个字符串)
+        # inputs_en_candidates_raw 应该是 [['候选1', '候选2', '候选3']] (列表包含一个列表)
+
+        # 将字符串包装成列表，因为 forward 期望 batch_size 个元素
         semantic_vector_B_from_A, semantic_vectors_B_candidates, embedding_before = \
             self.model(
-                [cpm_spoken_chinese_sentence], # 包裹成列表以模拟batch_size=1的输入
-                [game_round['candidate_english_sentences_raw']], # 包裹成列表的列表
+                [cpm_spoken_chinese_sentence], # 传入 list of string
+                [game_round['candidate_english_sentences_raw']], # 传入 list of list of string
                 self.device
             )
 
@@ -253,19 +254,27 @@ class GameTrainer:
         total_rounds = len(data_loader)
         print(f"\n--- 准备进行 {total_rounds} 轮游戏 ---")
 
-        for i, game_round in enumerate(data_loader): # DataLoader 默认返回批次数据
-            # DataLoader 会将数据中的每个字段都转换为批次 (batch_size, ...)
-            # 由于目前 batch_size=1，所以每个字段都是 (1, original_dim) 或 (1, original_list)
-            # 我们需要取 [0] 来获取原始数据
-            single_game_round = {k: v[0] if isinstance(v, list) else v.item() if isinstance(v, torch.Tensor) and v.numel() == 1 else v for k, v in game_round.items()}
+        for i, raw_game_round_from_dataloader in enumerate(data_loader): # DataLoader 返回原始字典的批次
+            # raw_game_round_from_dataloader['target_sentence_chinese_raw'] 会是一个 (batch_size,) 的元组或列表
+            # raw_game_round_from_dataloader['candidate_english_sentences_raw'] 会是一个 (batch_size, num_candidates) 的元组的元组或列表的列表
 
-            # 手动处理一下字符串字段，DataLoader默认不会把字符串包装成tensor
-            single_game_round['target_sentence_chinese_raw'] = game_round['target_sentence_chinese_raw'][0]
-            single_game_round['correct_english_sentence_raw'] = game_round['correct_english_sentence_raw'][0]
-            single_game_round['candidate_english_sentences_raw'] = game_round['candidate_english_sentences_raw'][0]
+            # 由于目前 batch_size=1, DataLoader 会将每个字段的值包装成一个元组或包含一个元素的列表
+            # 例如，{'target_sentence_chinese_raw': ('你看起来像一个聪明人。',), ...}
+            # 所以我们需要从这个包装中取出原始值
+            single_game_round = {
+                'target_sentence_chinese_raw': raw_game_round_from_dataloader['target_sentence_chinese_raw'][0],
+                'correct_english_sentence_raw': raw_game_round_from_dataloader['correct_english_sentence_raw'][0],
+                'candidate_english_sentences_raw': raw_game_round_from_dataloader['candidate_english_sentences_raw'][0], # 这是正确的，得到 ['S1', 'S2', 'S3']
+                'correct_candidate_index': raw_game_round_from_dataloader['correct_candidate_index'][0].item() # 转换为Python int
+            }
 
+            print(f"\n--- 游戏回合 {i + 1}/{total_rounds} ---")
+            print(f"🎯 目标中文句子 (CPM '说'): {single_game_round['target_sentence_chinese_raw']}")
+            print(f"📚 候选英文句子 (Agent B 选择): {single_game_round['candidate_english_sentences_raw']}")
+            print(f"✅ 正确索引: {single_game_round['correct_candidate_index']}")
 
-            self.train_one_round(single_game_round, i + 1, total_rounds)
+            self.train_one_round(single_game_round, i + 1, total_rounds) # 传入解包后的字典
+
 
         # --- 训练结束，汇总结果并保存 ---
         print("\n--- 训练总结 ---")
