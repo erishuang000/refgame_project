@@ -99,6 +99,10 @@ class AgentBListener(torch.nn.Module):
     def forward(self, inputs_cn_symbolic_raw, inputs_en_candidates_raw, device):
         # inputs_cn_symbolic_raw: 中文句子字符串列表 (Batch_size,)
         # inputs_en_candidates_raw: 英文候选句子列表的列表 (Batch_size, num_candidates)
+        print(f"DEBUG_FORWARD: inputs_cn_symbolic_raw: {inputs_cn_symbolic_raw}")
+        print(f"DEBUG_FORWARD: inputs_en_candidates_raw: {inputs_en_candidates_raw}")
+        # 确保 inputs_en_candidates_raw 是一个列表的列表，且内层列表包含3个字符串
+        # 例如：[['An apple fell on the ground.', 'The cat jumped on the table.', 'A red car drove down the street.']]
 
         embedding_before = self.model.wte.weight.clone().detach()
 
