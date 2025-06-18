@@ -5,7 +5,7 @@ import pandas as pd
 
 # --- Configuration ---
 RESULTS_FILE = "/puhome/23063003r/refgame_project/output/training_results.json"  # Path to the JSON results file
-OUTPUT_VISUALIZE_DIR = "output_visualize/" # Directory to save plots
+OUTPUT_VISUALIZE_DIR = "/puhome/23063003r/refgame_project/output_visualize/" # Directory to save plots
 ROLLING_WINDOW = 100 # Window size for rolling average/sum for smoothing
 
 # --- Create output directory if it doesn't exist ---
