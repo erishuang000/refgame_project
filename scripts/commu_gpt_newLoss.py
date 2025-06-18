@@ -100,42 +100,41 @@ class AgentBListener(torch.nn.Module):
         # inputs_cn_symbolic_raw: 中文句子字符串列表 (Batch_size,)
         # inputs_en_candidates_raw: 英文候选句子列表的列表 (Batch_size, num_candidates)
 
-        # 记录模型权重在计算前的状态，用于计算变化量
         embedding_before = self.model.wte.weight.clone().detach()
 
-        # 处理中文乱码输入
-        # 将中文句子拆分为字符，并用 GPT-2 的 tokenizer 处理
-        processed_cn_inputs = self.tokenizer(
-            [char for sentence in inputs_cn_symbolic_raw for char in list(sentence)], # 展平为单个字符列表
-            return_tensors="pt",
-            padding=True,
-            truncation=True
-        )
-        # Reshape the input_ids to match batch_size x seq_len for each sentence
-        # This part requires careful handling if batch_size > 1 and sentences have different lengths.
-        # For simplicity with batch_size=1, we keep it as is.
-        # For batch_size > 1, a custom collate_fn would be better for padding within tokenizer call.
-
-        # Current simplified logic for batch_size=1:
-        inputs_cn_symbolic = self.tokenizer(inputs_cn_symbolic_raw[0], return_tensors="pt").to(device)
+        # 1. 处理中文乱码输入 (batch_size=1 时)
+        # inputs_cn_symbolic_raw 是 ['一个苹果掉到了地上。']
+        inputs_cn_symbolic = self.tokenizer(inputs_cn_symbolic_raw[0], return_tensors="pt", padding=True, truncation=True).to(device)
         outputs_cn_symbolic = self.model(**inputs_cn_symbolic)
-        semantic_vector_B_from_A = outputs_cn_symbolic.last_hidden_state[:, 0, :] # (1, D_HIDDEN) for batch=1
+        semantic_vector_B_from_A = outputs_cn_symbolic.last_hidden_state[:, 0, :] # (1, D_HIDDEN)
 
 
-        # 处理英文候选句子
-        semantic_vectors_B_candidates = []
-        for eng_sentence in inputs_en_candidates_raw[0]: # Loop through candidates for single batch
-            inputs_en = self.tokenizer(eng_sentence, return_tensors="pt").to(device)
-            outputs_en = self.model(**inputs_en)
-            vec_en = outputs_en.last_hidden_state[:, 0, :] # (1, D_HIDDEN)
-            semantic_vectors_B_candidates.append(vec_en)
+        # 2. Agent B 处理英文候选句子 (关键修改在这里！)
+        # inputs_en_candidates_raw[0] 是 ['An apple fell on the ground.', 'The cat jumped on the table.', 'A red car drove down the street.']
+        # 将所有候选句子一次性传递给 tokenizer 进行批处理
+        inputs_en_candidates_tokenized = self.tokenizer(
+            inputs_en_candidates_raw[0], # 获取当前批次的候选句子列表
+            return_tensors="pt",
+            padding=True, # 确保填充到相同长度
+            truncation=True
+        ).to(device)
 
-        semantic_vectors_B_candidates = torch.cat(semantic_vectors_B_candidates, dim=0).unsqueeze(0) # (1, num_candidates, D_HIDDEN) for batch=1
+        # 一次性通过模型获取所有候选的语义向量
+        outputs_en_candidates = self.model(**inputs_en_candidates_tokenized)
 
-        # Note: If batch_size > 1, this needs to be refactored to process all candidates in a batch
-        # For example, using a single tokenizer call with padding for all candidate sentences across the batch.
+        # 提取每个候选句子的语义向量
+        # outputs_en_candidates.last_hidden_state 的形状是 (num_candidates, max_seq_len, D_HIDDEN)
+        # 我们取每个句子的第一个token的隐藏状态作为句子表示
+        semantic_vectors_B_candidates = outputs_en_candidates.last_hidden_state[:, 0, :]
+
+        # 此时 semantic_vectors_B_candidates 的形状是 (num_candidates, D_HIDDEN)，例如 (3, 768)
+        # 为了在 listener_mse_reciprocal_loss 中使用，需要变为 (batch_size, num_candidates, D_HIDDEN)
+        # 对于 batch_size=1，就是 (1, num_candidates, D_HIDDEN)
+        semantic_vectors_B_candidates = semantic_vectors_B_candidates.unsqueeze(0) # 变为 (1, num_candidates, D_HIDDEN)
+
 
         return semantic_vector_B_from_A, semantic_vectors_B_candidates, embedding_before
+
 
     def get_embedding_after(self):
         return self.model.wte.weight.detach()
