@@ -1,0 +1,13 @@
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+Traceback (most recent call last):
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 327, in <module>
+    trainer.train()
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 264, in train
+    self.train_one_round(single_game_round, i + 1, total_rounds)
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 197, in train_one_round
+    base_loss = listener_mse_reciprocal_loss(
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 72, in listener_mse_reciprocal_loss
+    loss = F.cross_entropy(logits, correct_candidate_index)
+  File "/puhome/23063003r/.conda/envs/refgame/lib/python3.10/site-packages/torch/nn/functional.py", line 3494, in cross_entropy
+    return torch._C._nn.cross_entropy_loss(
+IndexError: Target 2 is out of bounds.
