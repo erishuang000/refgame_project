@@ -97,49 +97,55 @@ class AgentBListener(torch.nn.Module):
         print(f"✅ AgentB: GPT-2 模型 Embedding 层已调整。")
 
     def forward(self, inputs_cn_symbolic_raw, inputs_en_candidates_raw, device):
-        # inputs_cn_symbolic_raw: 中文句子字符串列表 (Batch_size,)
-        # inputs_en_candidates_raw: 英文候选句子列表的列表 (Batch_size, num_candidates)
-        print(f"DEBUG_FORWARD: inputs_cn_symbolic_raw: {inputs_cn_symbolic_raw}")
-        print(f"DEBUG_FORWARD: inputs_en_candidates_raw: {inputs_en_candidates_raw}")
-        # 确保 inputs_en_candidates_raw 是一个列表的列表，且内层列表包含3个字符串
-        # 例如：[['An apple fell on the ground.', 'The cat jumped on the table.', 'A red car drove down the street.']]
+        print(f"DEBUG_FORWARD_STEP2: inputs_cn_symbolic_raw (from DataLoader, before [0]): {inputs_cn_symbolic_raw}")
+        print(f"DEBUG_FORWARD_STEP2: inputs_en_candidates_raw (from DataLoader, before [0]): {inputs_en_candidates_raw}")
 
-        embedding_before = self.model.wte.weight.clone().detach()
-
-        # 1. 处理中文乱码输入 (batch_size=1 时)
-        # inputs_cn_symbolic_raw 是 ['一个苹果掉到了地上。']
-        inputs_cn_symbolic = self.tokenizer(inputs_cn_symbolic_raw[0], return_tensors="pt", padding=True, truncation=True).to(device)
+        # 1. 处理中文乱码输入
+        # inputs_cn_symbolic_raw 是 ['一个苹果掉到了地上。'] (list of 1 string)
+        # 确保这里只取第一个元素，因为它仍然是 DataLoader 包装过的
+        cpm_sentence_for_tokenizer = inputs_cn_symbolic_raw[0]
+        inputs_cn_symbolic = self.tokenizer(cpm_sentence_for_tokenizer, return_tensors="pt", padding=True, truncation=True).to(device)
         outputs_cn_symbolic = self.model(**inputs_cn_symbolic)
-        semantic_vector_B_from_A = outputs_cn_symbolic.last_hidden_state[:, 0, :] # (1, D_HIDDEN)
+        semantic_vector_B_from_A = outputs_cn_symbolic.last_hidden_state[:, 0, :]
 
 
-        # 2. Agent B 处理英文候选句子 (关键修改在这里！)
-        # inputs_en_candidates_raw[0] 是 ['An apple fell on the ground.', 'The cat jumped on the table.', 'A red car drove down the street.']
-        # 将所有候选句子一次性传递给 tokenizer 进行批处理
+        # 2. Agent B 处理英文候选句子 (再次仔细检查这里)
+        # inputs_en_candidates_raw 是 [['候选1', '候选2', '候选3']] 或者 [('候选1',)] 这样的格式
+        # 我们需要提取出 ['候选1', '候选2', '候选3']
+        english_sentences_list = inputs_en_candidates_raw[0]
+        print(f"DEBUG_FORWARD_STEP2: english_sentences_list (after [0] from inputs_en_candidates_raw): {english_sentences_list}, type: {type(english_sentences_list)}")
+        # 期望这里是一个包含3个字符串的列表，如 ['An apple...', 'The cat...', 'A red...']
+
+        # 检查是否是元组
+        if isinstance(english_sentences_list, tuple):
+            print(f"警告: english_sentences_list 是一个元组！将其转换为列表。")
+            english_sentences_list = list(english_sentences_list)
+
+        # 检查列表长度
+        if not isinstance(english_sentences_list, list) or len(english_sentences_list) < 3: # 假设 num_candidates 是3
+            print(f"严重错误: english_sentences_list 不是列表或长度不足3！实际: {english_sentences_list}")
+            # 这里可以直接 raise TypeError 或 AssertionError 来提前报错
+            raise ValueError(f"候选英文句子数量不足或格式错误: {english_sentences_list}")
+
+
         inputs_en_candidates_tokenized = self.tokenizer(
-            inputs_en_candidates_raw[0], # 获取当前批次的候选句子列表
+            english_sentences_list, # 传入字符串列表
             return_tensors="pt",
-            padding=True, # 确保填充到相同长度
+            padding=True,
             truncation=True
         ).to(device)
 
-        # 一次性通过模型获取所有候选的语义向量
+        print(f"DEBUG_TOKENIZER_AFTER_FIX_STEP2: inputs_en_candidates_tokenized input_ids shape: {inputs_en_candidates_tokenized['input_ids'].shape}")
+        # 期望形状: (num_candidates, max_seq_len), 例如 (3, max_len)
+
         outputs_en_candidates = self.model(**inputs_en_candidates_tokenized)
 
-        # 提取每个候选句子的语义向量
-        # outputs_en_candidates.last_hidden_state 的形状是 (num_candidates, max_seq_len, D_HIDDEN)
-        # 我们取每个句子的第一个token的隐藏状态作为句子表示
         semantic_vectors_B_candidates = outputs_en_candidates.last_hidden_state[:, 0, :]
 
-        # 此时 semantic_vectors_B_candidates 的形状是 (num_candidates, D_HIDDEN)，例如 (3, 768)
-        # 为了在 listener_mse_reciprocal_loss 中使用，需要变为 (batch_size, num_candidates, D_HIDDEN)
-        # 对于 batch_size=1，就是 (1, num_candidates, D_HIDDEN)
         semantic_vectors_B_candidates = semantic_vectors_B_candidates.unsqueeze(0) # 变为 (1, num_candidates, D_HIDDEN)
 
-
         return semantic_vector_B_from_A, semantic_vectors_B_candidates, embedding_before
-
-
+        
     def get_embedding_after(self):
         return self.model.wte.weight.detach()
 
