@@ -126,7 +126,9 @@ class AgentBListener(torch.nn.Module):
 
         # 将展平的语义向量重新塑形为 (batch_size, num_candidates, D_HIDDEN)
         # num_candidates = len(inputs_en_candidates_list_raw[0]) # 从第一个样本的候选数获取
-        num_candidates = len(flat_en_candidates) // len(inputs_en_raw) # 假设所有样本候选数相同
+        num_candidates = len(inputs_en_candidates_list_raw[0])
+        print(f"DEBUG_FORWARD: Detected num_candidates per sample: {num_candidates}")
+
         semantic_vectors_B_candidates = flat_semantic_vectors_B_candidates.view(
             -1, num_candidates, self.model.config.hidden_size # -1 for batch_size
         )
