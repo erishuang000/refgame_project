@@ -1,0 +1,15 @@
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+Traceback (most recent call last):
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 350, in <module>
+    trainer.train()
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 269, in train
+    self.train_one_round(game_round_batch, i + 1, total_rounds) # 直接传入批次数据
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 176, in train_one_round
+    self.model(
+  File "/puhome/23063003r/.conda/envs/refgame/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/puhome/23063003r/.conda/envs/refgame/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/hpc2/puhome/23063003r/refgame_project/scripts/commu_gpt_newLoss.py", line 129, in forward
+    num_candidates = len(flat_en_candidates) // len(inputs_en_raw) # 假设所有样本候选数相同
+NameError: name 'inputs_en_raw' is not defined. Did you mean: 'inputs_cn_raw'?
