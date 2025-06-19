@@ -1,0 +1,19 @@
+🚀 作业开始于: Thu Jun 19 12:25:59 HKT 2025
+📌 节点: h07c03
+🔧 使用 CPU 核数: 8
+🚀 使用设备: cpu
+✅ AgentB: GPT-2 tokenizer 已扩展，新的词汇表大小: 53538
+✅ AgentB: GPT-2 模型 Embedding 层已调整。
+
+--- 准备进行 15000 轮游戏 ---
+
+--- 游戏回合 1/15000 ---
+🎯 目标中文句子 (CPM '说'): 你看起来像一个聪明人。
+📚 候选英文句子 (Agent B 选择): ("Tom wasn't able to fix the radio.",)
+✅ 正确索引: 2
+DEBUG_FORWARD_STEP2: inputs_cn_symbolic_raw (from DataLoader, before [0]): ['你看起来像一个聪明人。']
+DEBUG_FORWARD_STEP2: inputs_en_candidates_raw (from DataLoader, before [0]): [("Tom wasn't able to fix the radio.",)]
+DEBUG_FORWARD_STEP2: english_sentences_list (after [0] from inputs_en_candidates_raw): ("Tom wasn't able to fix the radio.",), type: <class 'tuple'>
+警告: english_sentences_list 是一个元组！将其转换为列表。
+严重错误: english_sentences_list 不是列表或长度不足3！实际: ["Tom wasn't able to fix the radio."]
+✅ 作业结束于: Thu Jun 19 12:28:16 HKT 2025
