@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=commu_gpt          # 任务名
-#SBATCH --partition=h07q1               # 分区名（如果有别的分区请替换）
+#SBATCH --partition=normal               # 分区名（如果有别的分区请替换）
 #SBATCH --nodes=1                         # 节点数
 #SBATCH --ntasks=1                        # 任务数
 #SBATCH --cpus-per-task=8                 # 每个任务使用4个CPU核心
@@ -13,6 +13,7 @@ echo "🚀 作业开始于: $(date)"
 echo "📌 节点: $(hostname)"
 echo "🔧 使用 CPU 核数: $SLURM_CPUS_PER_TASK"
 
+module load miniconda3/24.3.0-gcc-11.5.0-linux-rocky9-cascadelake-nwowwvl
 # 加载环境
 source ~/.bashrc
 conda activate refgame
