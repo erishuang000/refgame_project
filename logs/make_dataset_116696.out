@@ -1,9 +1,0 @@
-🚀 作业开始于: Wed Jun 18 00:35:05 HKT 2025
-📌 节点: h07c03
-🔧 使用 CPU 核数: 4
-❌ 错误加载数据以收集中文符号: [Errno 2] No such file or directory: '/puhome/23063003r/refgame_project/data/generated_game_data.json.json'
-✅ GPT-2 tokenizer 已扩展，新的词汇表大小: 50319
-✅ GPT-2 模型 Embedding 层已调整。
-创建输出目录: /puhome/23063003r/refgame_project/output/
-❌ 错误: 数据库文件 '/puhome/23063003r/refgame_project/data/generated_game_data.json.json' 未找到。请创建它。
-✅ 作业结束于: Wed Jun 18 00:37:48 HKT 2025
