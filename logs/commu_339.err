@@ -1,0 +1,4 @@
+  File "/ubsn/home/23063003r/refgame_project/scripts/commu_gpt.py", line 17
+    PENALTY_WRONG = 1.0  # 猜错时的“惩罚”强度 (增大损失)
+                      ^
+SyntaxError: invalid decimal literal
