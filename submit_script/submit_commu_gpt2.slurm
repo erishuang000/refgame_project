@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=commu_gpt          # 任务名
-#SBATCH --partition=normal               # 分区名（如果有别的分区请替换）
-#SBATCH --nodes=1                         # 节点数
-#SBATCH --ntasks=1                        # 任务数
-#SBATCH --cpus-per-task=8                 # 每个任务使用4个CPU核心
-#SBATCH --mem=16G                          # 分配内存
-#SBATCH --time=08:00:00                   # 最长运行时间
+#SBATCH --job-name=commu_gpt         # 任务名
+#SBATCH --partition=normal             # 分区名（如果有别的分区请替换）
+#SBATCH --nodes=1                      # 节点数
+#SBATCH --ntasks=1                     # 任务数
+#SBATCH --cpus-per-task=8              # 每个任务使用8个CPU核心
+#SBATCH --mem=16G                      # 分配内存
+#SBATCH --time=08:00:00                # 最长运行时间
 #SBATCH --output=logs/commu_%j.out # 标准输出
 #SBATCH --error=logs/commu_%j.err  # 错误日志
 
@@ -13,12 +13,15 @@ echo "🚀 作业开始于: $(date)"
 echo "📌 节点: $(hostname)"
 echo "🔧 使用 CPU 核数: $SLURM_CPUS_PER_TASK"
 
+# 加载 miniconda3 模块 (如果你的HPC系统需要此步骤)
 module load miniconda3/24.3.0-gcc-11.5.0-linux-rocky9-cascadelake-nwowwvl
-# 加载环境
-conda init
+
+# 这是在 SLURM 脚本中正确激活 Conda 环境的关键步骤
+# 确保 /ubsn/home/23063003r/miniconda3 是你的 Miniconda3 实际安装路径
+source /ubsn/home/23063003r/miniconda3/etc/profile.d/conda.sh
 conda activate refgame
 
-# 运行数据处理脚本，推荐在脚本中使用多线程（如 joblib, multiprocessing, torch 等）
+# 运行数据处理脚本
 python scripts/commu_gpt.py
 
 echo "✅ 作业结束于: $(date)"
