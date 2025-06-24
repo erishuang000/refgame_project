@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=commu_gpt         # 任务名
+#SBATCH --job-name=commu_gptXL         # 任务名
 #SBATCH --partition=normal             # 分区名（如果有别的分区请替换）
 #SBATCH --nodes=1                      # 节点数
 #SBATCH --ntasks=1                     # 任务数
@@ -18,7 +18,6 @@ module load miniconda3/24.3.0-gcc-11.5.0-linux-rocky9-cascadelake-nwowwvl
 
 # 这是在 SLURM 脚本中正确激活 Conda 环境的关键步骤
 # 确保 /ubsn/home/23063003r/miniconda3 是你的 Miniconda3 实际安装路径
-source /ubsn/home/23063003r/miniconda3/etc/profile.d/conda.sh
 source activate refgame
 
 # 运行数据处理脚本
