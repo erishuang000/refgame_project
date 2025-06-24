@@ -3,7 +3,7 @@ from torch.optim import AdamW
 import torch
 
 # 本地 GPT-2 模型路径（可替换为 "gpt2" 使用在线模型）
-MODEL_PATH = "/puhome/23063003r/refgame_project/models/gpt2"
+MODEL_PATH = "/ubsnhome/23063003r/refgame_project/models/gpt2"
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 model = AutoModelForCausalLM.from_pretrained(MODEL_PATH)
