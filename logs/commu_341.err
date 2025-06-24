@@ -1,1 +1,2 @@
 The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+slurmstepd-c03: error: *** JOB 341 ON c03 CANCELLED AT 2025-06-24T14:37:31 ***
