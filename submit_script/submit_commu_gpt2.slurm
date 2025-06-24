@@ -19,7 +19,7 @@ module load miniconda3/24.3.0-gcc-11.5.0-linux-rocky9-cascadelake-nwowwvl
 # 这是在 SLURM 脚本中正确激活 Conda 环境的关键步骤
 # 确保 /ubsn/home/23063003r/miniconda3 是你的 Miniconda3 实际安装路径
 source /ubsn/home/23063003r/miniconda3/etc/profile.d/conda.sh
-conda activate refgame
+source activate refgame
 
 # 运行数据处理脚本
 python scripts/commu_gpt.py
