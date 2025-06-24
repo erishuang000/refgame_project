@@ -1,0 +1,4 @@
+  File "/ubsn/home/23063003r/refgame_project/scripts/commu_gpt.py", line 10
+    DATA_FILE = "/ubsnhome/23063003r/refgame_project/data/generated_game_data.json"  # 模拟数据库文件
+                                                                                   ^
+SyntaxError: invalid non-printable character U+00A0
