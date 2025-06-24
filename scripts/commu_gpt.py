@@ -6,10 +6,10 @@ from torch.optim import AdamW
 import os # 导入 os 模块用于路径操作
 
 # --- 配置 ---
-MODEL_PATH = "/ubsnhome/23063003r/refgame_project/models/gpt2" # 本地 GPT-2 模型路径
-DATA_FILE = "/ubsnhome/23063003r/refgame_project/data/generated_game_data.json"  # 模拟数据库文件
-OUTPUT_DIR = "/ubsnhome/23063003r/refgame_project/output/" # 新增：输出文件存放目录
-D_HIDDEN = 1600 # <<< --- 重要修改：改为 GPT-2 XL 的 n_embd 值 ---
+MODEL_PATH = "/ubsnhome/23063003r/refgame_project/models/gpt2"
+DATA_FILE = "/ubsnhome/23063003r/refgame_project/data/generated_game_data.json"
+OUTPUT_DIR = "/ubsnhome/23063003r/refgame_project/output/"
+D_HIDDEN = 1600 
 # D_HIDDEN = 768 # GPT-2的隐藏层维度
 
 # 定义奖励和惩罚值（可以根据实验调整）
