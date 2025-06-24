@@ -1,0 +1,17 @@
+🚀 作业开始于: Tue Jun 24 10:48:19 UTC 2025
+📌 节点: c03
+🔧 使用 CPU 核数: 8
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/condabin/conda
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/bin/conda
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/bin/conda-env
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/bin/activate
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/bin/deactivate
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/etc/profile.d/conda.sh
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/etc/fish/conf.d/conda.fish
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/shell/condabin/Conda.psm1
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/shell/condabin/conda-hook.ps1
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/lib/python3.12/site-packages/xontrib/conda.xsh
+no change     /opt/ohpc/pub/apps/spack/local/linux-rocky9-cascadelake/gcc-11.5.0/miniconda3-24.3.0-nwowwvlo26n4orbjtuidu2sjtlajswu3/etc/profile.d/conda.csh
+no change     /ubsnhome/23063003r/.bashrc
+No action taken.
+✅ 作业结束于: Tue Jun 24 10:48:21 UTC 2025
