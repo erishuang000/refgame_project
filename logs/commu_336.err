@@ -1,0 +1,8 @@
+/var/spool/slurmd/job00336/slurm_script: line 21: /ubsn/home/23063003r/miniconda3/etc/profile.d/conda.sh: No such file or directory
+
+CondaError: Run 'conda init' before 'conda activate'
+
+Traceback (most recent call last):
+  File "/ubsn/home/23063003r/refgame_project/scripts/commu_gpt.py", line 1, in <module>
+    import torch
+ModuleNotFoundError: No module named 'torch'
