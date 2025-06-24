@@ -15,7 +15,7 @@ from torch.optim import AdamW
 import torch
 
 # 路径根据你的本地模型位置修改
-MODEL_PATH = "/puhome/23063003r/refgame_project/models/CPM-Generate"
+MODEL_PATH = "/ubsnhome/23063003r/refgame_project/models/CPM-Generate"
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 model = AutoModelWithLMHead.from_pretrained(MODEL_PATH)
