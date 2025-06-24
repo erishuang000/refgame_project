@@ -15,6 +15,7 @@ echo "🔧 使用 CPU 核数: $SLURM_CPUS_PER_TASK"
 
 module load miniconda3/24.3.0-gcc-11.5.0-linux-rocky9-cascadelake-nwowwvl
 # 加载环境
+conda init
 conda activate refgame
 
 # 运行数据处理脚本，推荐在脚本中使用多线程（如 joblib, multiprocessing, torch 等）
