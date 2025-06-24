@@ -49,7 +49,7 @@ def get_embeddings(model, tokenizer, text, return_input_embedding=False):
     # 取最后一个隐藏层的输出作为句子Embedding
     # 这里我们取所有token的平均，可以根据需求修改为 [CLS] token (如果模型有) 或其他池化策略
     # outputs.last_hidden_state 的形状是 (batch_size, sequence_length, hidden_size)
-    output_embeddings = outputs.last_hidden_state.squeeze(0).mean(dim=0).tolist()
+    output_embeddings = outputs.hidden_states[-1].squeeze(0).mean(dim=0).tolist()
 
     return input_embeddings, output_embeddings
 
