@@ -9,65 +9,43 @@
     "temperature": 0.1
   },
   "summary": {
-    "accuracy": 0.0,
-    "avg_loss": 2.2680793404579163
+    "accuracy": 75.0,
+    "avg_loss": 1.8104406297206879
   },
-  "gpt2_error_log": [
-    {
-      "round": 1,
-      "speaker_concept": "airplane",
-      "description": "\"An airplane is a mass of metal and a gas, with a lift produced by an engine. In the case of a gas, the",
-      "listener_chose": "老师",
-      "correct_answer": "飞机"
-    },
-    {
-      "round": 3,
-      "speaker_concept": "cat",
-      "description": "a cat is a furry mammal with a short tail, which is not particularly useful for catching prey.",
-      "listener_chose": "沙发",
-      "correct_answer": "猫"
-    }
-  ],
+  "gpt2_error_log": [],
   "cpm_error_log": [
     {
       "round": 2,
       "speaker_concept": "飞机",
-      "description": "'''''''''''''''",
+      "description": "简单描述一下这个概念:飞机描述:物体:物体是飞机,但是物体的组成是物体的组成,比如物",
       "listener_chose": "orange",
       "correct_answer": "airplane"
-    },
-    {
-      "round": 4,
-      "speaker_concept": "猫",
-      "description": "It's flannel work 'cats' 'cats",
-      "listener_chose": "sofa",
-      "correct_answer": "cat"
     }
   ],
   "log": [
     {
       "round": 1,
       "speaker": "GPT-2",
-      "correct": false,
-      "loss": 2.1876087188720703
+      "correct": true,
+      "loss": 1.8681014776229858
     },
     {
       "round": 2,
       "speaker": "CPM",
       "correct": false,
-      "loss": 2.263016939163208
+      "loss": 1.9985857009887695
     },
     {
       "round": 3,
       "speaker": "GPT-2",
-      "correct": false,
-      "loss": 2.291963577270508
+      "correct": true,
+      "loss": 1.7669060230255127
     },
     {
       "round": 4,
       "speaker": "CPM",
-      "correct": false,
-      "loss": 2.329728126525879
+      "correct": true,
+      "loss": 1.6081693172454834
     }
   ]
 }
