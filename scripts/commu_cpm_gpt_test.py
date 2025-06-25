@@ -1,12 +1,8 @@
-# ✅ 已重构完整代码，并采纳了关键修正和优化
-# 1. 【已修正】Speaker 使用自回归语言模型为自己语言的概念生成描述
-# 2. 【已优化】get_semantic_embedding 中加入 eval() 模式切换，提升效率
-# 3. 【已优化】Contrastive loss 计算避免循环，提升效率
-# 4. 保留所有四种损失函数，形成强大的协同学习机制
+# ✅ 最终优化版代码，附带清晰的、用于调试和分析的详细过程打印
 
 import torch
 import torch.nn as nn
-from transformers import AutoTokenizer, GPT2LMHeadModel, GPT2Model, AutoModelForCausalLM
+from transformers import AutoTokenizer, GPT2LMHeadModel, AutoModelForCausalLM
 import json
 import torch.nn.functional as F
 from torch.optim import AdamW
@@ -74,7 +70,6 @@ class Agent:
 
     def get_candidate_embeddings(self, sentences: list):
         # 确保以一致的方式获取嵌入
-        # 注意：此处为简化，逐句处理。若性能瓶颈可优化为批处理。
         embeddings = [self.get_semantic_embedding(s) for s in sentences]
         return torch.cat(embeddings, dim=0)
 
@@ -122,7 +117,6 @@ gpt2_agent.train_mode()
 print("Loading CPM...")
 cpm_tokenizer = AutoTokenizer.from_pretrained(CPM_MODEL_PATH)
 cpm_model_full = AutoModelForCausalLM.from_pretrained(CPM_MODEL_PATH).to(device)
-# 注意：CPM-Generate 的生成能力在完整模型上，但我们用于提取 embedding 的是其 transformer 主体
 cpm_agent = Agent("CPM", cpm_model_full, cpm_tokenizer, LEARNING_RATE_CPM, device)
 cpm_agent.train_mode()
 
@@ -135,12 +129,17 @@ log = []
 total_loss_sum = 0.0
 correct_count = 0
 
-print(f"--- Starting {len(data) * 2} rounds of interaction ---")
+print(f"\n--- Starting {len(data) * 2} rounds of interaction (Verbose Mode) ---")
 for i, sample in enumerate(data):
     for turn in range(2):
         round_idx = i * 2 + turn + 1
+        # ====================================================================
+        # [INFO] START OF ROUND
+        # ====================================================================
+        print(f"\n\n{'='*25} 游戏回合 {round_idx} {'='*25}")
 
-        # --- 【核心修正】根据角色，正确分配各自语言的概念 ---
+        # --- 阶段 1: 角色分配与任务设置 ---
+        print("\n▶️  阶段 1: 角色分配与任务设置")
         if turn == 0:
             speaker, listener = gpt2_agent, cpm_agent
             concept_for_speaker = sample['concept_english']
@@ -152,65 +151,112 @@ for i, sample in enumerate(data):
             correct_option_for_listener = sample['concept_english']
             options_for_listener = sample['distractors_english'] + [correct_option_for_listener]
 
-        # 1. Speaker 生成描述
+        print(f"    🗣️  Speaker: {speaker.name}")
+        print(f"    👂  Listener: {listener.name}")
+
+        # --- 阶段 2: Speaker 生成描述 ---
+        print("\n▶️  阶段 2: Speaker 生成描述")
+        print(f"    Speaker接收到的概念: '{concept_for_speaker}'")
         random.shuffle(options_for_listener)
         correct_index = options_for_listener.index(correct_option_for_listener)
         description = generate_description(concept_for_speaker, speaker)
+        print(f"    Speaker生成的描述: '{description}'")
 
-        # 2. Listener 猜测
+        # --- 阶段 3: Listener 理解与猜测 ---
+        print("\n▶️  阶段 3: Listener 理解与猜测")
+        print(f"    Listener接收到的选项: {options_for_listener}")
+        print(f"    (本轮正确答案是索引 {correct_index}: '{correct_option_for_listener}')")
         desc_embed = listener.get_semantic_embedding(description)
         opt_embeds = listener.get_candidate_embeddings(options_for_listener)
         sims = F.cosine_similarity(desc_embed, opt_embeds, dim=1)
         pred_idx = torch.argmax(sims).item()
 
-        # 3. 计算复合损失
+        print("    计算出的相似度:")
+        for k, sim_val in enumerate(sims.tolist()):
+            print(f"        - 选项 '{options_for_listener[k]}': {sim_val:.4f}")
+
+        print(f"    Listener的选择: 索引 {pred_idx} -> '{options_for_listener[pred_idx]}'")
         is_correct = (pred_idx == correct_index)
-        correct_tensor = torch.tensor([correct_index], device=device)
+        if is_correct:
+            print("    ✅ 结论: 猜测正确！")
+        else:
+            print("    ❌ 结论: 猜测错误！")
+
+        # --- 阶段 4: 复合损失计算 (详细分解) ---
+        print("\n▶️  阶段 4: 复合损失计算 (详细分解)")
 
         # A. Listener Loss
+        correct_tensor = torch.tensor([correct_index], device=device)
         listener_loss = F.cross_entropy(sims.unsqueeze(0), correct_tensor)
-        final_listener_loss = listener_loss * (1 - REWARD_CORRECT if is_correct else PENALTY_WRONG)
+        reward_penalty_factor = (1 - REWARD_CORRECT) if is_correct else PENALTY_WRONG
+        final_listener_loss = listener_loss * reward_penalty_factor
+        print(f"    [A] Listener Loss:")
+        print(f"        - 基础交叉熵损失: {listener_loss.item():.4f}")
+        print(f"        - 奖惩系数: {reward_penalty_factor:.2f} ({'奖励' if is_correct else '惩罚'})")
+        print(f"        -  => 最终 Listener Loss = {final_listener_loss.item():.4f}")
 
-        # 获取 Speaker 描述的嵌入，用于后续损失计算
+        # 获取用于 Speaker 学习的嵌入向量
         speaker_embed = speaker.get_semantic_embedding(description)
-        # 获取 Listener 对正确选项的嵌入，作为对齐目标
         target_embed = listener.get_semantic_embedding(correct_option_for_listener).detach()
 
         # B. Alignment Loss (吸引力)
         alignment_loss = -F.cosine_similarity(speaker_embed, target_embed).mean()
+        print(f"    [B] Alignment Loss (吸引力):")
+        print(f"        - 目标: 拉近'{description[:20]}...'和'{correct_option_for_listener}'的语义距离")
+        print(f"        -  => 计算出的 Alignment Loss = {alignment_loss.item():.4f}")
 
         # C. Anti-Alignment Loss (排斥力)
         anti_loss = torch.tensor(0.0, device=device)
+        print(f"    [C] Anti-Alignment Loss (排斥力):")
         if not is_correct:
             misleading_option = options_for_listener[pred_idx]
             misleading_embed = listener.get_semantic_embedding(misleading_option).detach()
-            # 我们希望 speaker_embed 和 misleading_embed 的相似度变小，即 -sim 的值变小。
-            # 所以损失函数是 sim 本身，最小化这个损失就是最小化相似度。
             anti_loss = F.cosine_similarity(speaker_embed, misleading_embed).mean()
+            print(f"        - 目标: 推远'{description[:20]}...'和被错选的'{misleading_option}'的语义距离")
+            print(f"        -  => 计算出的 Anti-Alignment Loss = {anti_loss.item():.4f}")
+        else:
+            print("        - (猜测正确，无需计算此项损失)")
 
-        # D. Contrastive Loss (区分力) - 【已优化】
+        # D. Contrastive Loss (区分力)
+        print(f"    [D] Contrastive Loss (区分力):")
         negative_options = [opt for opt in options_for_listener if opt != correct_option_for_listener]
-        negative_embeds = listener.get_candidate_embeddings(negative_options).detach()
-
-        pos_sim = F.cosine_similarity(speaker_embed, target_embed) / CONTRASTIVE_TEMPERATURE
-        neg_sims = F.cosine_similarity(speaker_embed, negative_embeds) / CONTRASTIVE_TEMPERATURE
-
-        all_logits = torch.cat([pos_sim, neg_sims.view(-1)]) # 形状 [1+N]
-        contrastive_labels = torch.tensor([0], device=device)
-        contrastive_loss = F.cross_entropy(all_logits.unsqueeze(0), contrastive_labels)
+        if negative_options:
+            negative_embeds = listener.get_candidate_embeddings(negative_options).detach()
+            pos_sim = F.cosine_similarity(speaker_embed, target_embed) / CONTRASTIVE_TEMPERATURE
+            neg_sims = F.cosine_similarity(speaker_embed, negative_embeds) / CONTRASTIVE_TEMPERATURE
+            all_logits = torch.cat([pos_sim, neg_sims.view(-1)])
+            contrastive_labels = torch.tensor([0], device=device)
+            contrastive_loss = F.cross_entropy(all_logits.unsqueeze(0), contrastive_labels)
+            print(f"        - 目标: 让'{description[:20]}...'与'{correct_option_for_listener}'的相似度远高于其他所有选项")
+            print(f"        -  => 计算出的 Contrastive Loss = {contrastive_loss.item():.4f}")
+        else:
+            contrastive_loss = torch.tensor(0.0, device=device)
+            print("        - (没有负样本，无需计算此项损失)")
 
         # E. 合并总损失
+        print(f"    [E] 总损失计算:")
         total_loss = final_listener_loss + \
                      ALIGNMENT_LOSS_WEIGHT * alignment_loss + \
                      ANTI_ALIGNMENT_WEIGHT * anti_loss + \
                      CONTRASTIVE_LOSS_WEIGHT * contrastive_loss
+        print("        " + "-"*40)
+        print(f"        Total Loss = Listener_Loss + (W_align * Align_L) + (W_anti * Anti_L) + (W_contrast * Contrast_L)")
+        print(f"                   = {final_listener_loss.item():.4f} + ({ALIGNMENT_LOSS_WEIGHT} * {alignment_loss.item():.4f}) + ({ANTI_ALIGNMENT_WEIGHT} * {anti_loss.item():.4f}) + ({CONTRASTIVE_LOSS_WEIGHT} * {contrastive_loss.item():.4f})")
+        print(f"                   = {final_listener_loss.item():.4f} + {ALIGNMENT_LOSS_WEIGHT*alignment_loss.item():.4f} + {ANTI_ALIGNMENT_WEIGHT*anti_loss.item():.4f} + {CONTRASTIVE_LOSS_WEIGHT*contrastive_loss.item():.4f}")
+        print(f"        ----------------------------------------")
+        print(f"        ==> 💸 最终总损失 (Final Total Loss): {total_loss.item():.4f}")
 
         # 4. 协同更新
+        print("\n▶️  阶段 5: 模型协同更新")
+        print("    执行 total_loss.backward() 计算两个Agent所有相关参数的梯度...")
         speaker.optimizer.zero_grad()
         listener.optimizer.zero_grad()
         total_loss.backward()
+        print(f"    执行 speaker.optimizer.step() 更新 {speaker.name} 的权重...")
         speaker.optimizer.step()
+        print(f"    执行 listener.optimizer.step() 更新 {listener.name} 的权重...")
         listener.optimizer.step()
+        print("    ✅ 更新完成!")
 
         # 5. 日志记录
         total_loss_sum += total_loss.item()
@@ -225,7 +271,9 @@ for i, sample in enumerate(data):
                 "correct_answer": correct_option_for_listener
             })
         log.append({"round": round_idx, "speaker": speaker.name, "correct": is_correct, "loss": total_loss.item()})
-        print(f"Round {round_idx}: Speaker={speaker.name}, Correct={is_correct}, Loss={total_loss.item():.4f}")
+        # 原有的简洁打印依然保留，方便快速浏览
+        # print(f"Round {round_idx}: Speaker={speaker.name}, Correct={is_correct}, Loss={total_loss.item():.4f}")
+
 
 # --- 总结与保存 ---
 total_games = len(data) * 2
@@ -244,10 +292,10 @@ summary = {
     "log": log
 }
 
-output_file_path = os.path.join(OUTPUT_DIR, "final_training_run_results.json")
+output_file_path = os.path.join(OUTPUT_DIR, "final_training_run_results_verbose.json")
 with open(output_file_path, 'w', encoding='utf-8') as f:
     json.dump(summary, f, ensure_ascii=False, indent=2)
 
-print(f"\n--- Training Finished ---")
-print(f"✅ Accuracy: {accuracy:.2f}% | Avg Loss: {avg_loss:.4f}")
-print(f"📄 Results saved to {output_file_path}")
+print(f"\n\n{'='*25} 训练结束 {'='*25}")
+print(f"✅ 准确率: {accuracy:.2f}% | 平均损失: {avg_loss:.4f}")
+print(f"📄 详细结果已保存至: {output_file_path}")
