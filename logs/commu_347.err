@@ -1,0 +1,19 @@
+The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Building prefix dict from the default dictionary ...
+Loading model from cache /tmp/jieba.cache
+Loading model cost 0.506 seconds.
+Prefix dict has been built successfully.
+Traceback (most recent call last):
+  File "/ubsn/home/23063003r/refgame_project/scripts/commu_cpm_gpt_test.py", line 124, in <module>
+    speaker_embed = speaker.get_semantic_embedding(description)
+  File "/ubsn/home/23063003r/refgame_project/scripts/commu_cpm_gpt_test.py", line 56, in get_semantic_embedding
+    return self.projection(raw_embedding)
+  File "/ubsnhome/23063003r/.conda/envs/refgame/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1751, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/ubsnhome/23063003r/.conda/envs/refgame/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/ubsnhome/23063003r/.conda/envs/refgame/lib/python3.10/site-packages/torch/nn/modules/linear.py", line 125, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (1x50257 and 1600x768)
