@@ -1,4 +1,7 @@
-# ✅ 最终优化版代码，附带清晰的、用于调试和分析的详细过程打印
+# ✅ 最终修正版代码，附带清晰的、用于调试和分析的详细过程打印
+# 1. 【已修正】确保 GPT-2 Tokenizer 能处理中文，使其能扮演 Listener 角色
+# 2. 【已修正】确保 Speaker Agent 使用自己语言的概念生成描述
+# 3. 【打印增强】对所有交互和计算步骤，都加入了清晰的打印语句
 
 import torch
 import torch.nn as nn
@@ -34,42 +37,25 @@ class Agent:
         self.model = model
         self.tokenizer = tokenizer
         self.device = device
-
-        if hasattr(model.config, 'hidden_size'):
-            native_hidden_size = model.config.hidden_size
-        elif hasattr(model.config, 'n_embd'):
-            native_hidden_size = model.config.n_embd
-        else:
-            raise ValueError(f"Cannot determine hidden size for model {self.name}")
-
+        if hasattr(model.config, 'hidden_size'): native_hidden_size = model.config.hidden_size
+        elif hasattr(model.config, 'n_embd'): native_hidden_size = model.config.n_embd
+        else: raise ValueError(f"Cannot determine hidden size for model {self.name}")
         self.projection = nn.Linear(native_hidden_size, SHARED_EMBEDDING_DIM).to(self.device)
         self.optimizer = AdamW(list(self.model.parameters()) + list(self.projection.parameters()), lr=learning_rate)
         self.error_log = []
 
     def get_semantic_embedding(self, text: str):
-        # 切换到评估模式以禁用 dropout 等，并阻止梯度计算，以加速和节省内存
         self.model.eval()
         with torch.no_grad():
             inputs = self.tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512).to(self.device)
             outputs = self.model(**inputs)
-        # 完成推理后，立即切回训练模式，以便后续的梯度计算
         self.model.train()
-
-        # 兼容不同模型的输出格式
-        if hasattr(outputs, 'last_hidden_state'):
-             # GPT2Model 或者 CPM 的 transformer 主体
-            raw_embedding = outputs.last_hidden_state[:, 0, :]
-        elif hasattr(outputs, 'logits'):
-             # GPT2LMHeadModel
-            raw_embedding = self.model.transformer(inputs['input_ids'])[0][:,0,:]
-        else:
-            raw_embedding = outputs[0][:, 0, :]
-
-        # 通过投射层连接计算图
+        if hasattr(outputs, 'last_hidden_state'): raw_embedding = outputs.last_hidden_state[:, 0, :]
+        elif hasattr(outputs, 'logits'): raw_embedding = self.model.transformer(inputs['input_ids'])[0][:,0,:]
+        else: raw_embedding = outputs[0][:, 0, :]
         return self.projection(raw_embedding)
 
     def get_candidate_embeddings(self, sentences: list):
-        # 确保以一致的方式获取嵌入
         embeddings = [self.get_semantic_embedding(s) for s in sentences]
         return torch.cat(embeddings, dim=0)
 
@@ -79,52 +65,57 @@ class Agent:
 
 # --- 辅助函数 ---
 def generate_description(concept: str, agent: Agent, max_tokens=30) -> str:
-    # ❗️ 使用更健壮的 prompt 格式
     prompt = f"A short description of the concept '{concept}' is:"
     input_ids = agent.tokenizer(prompt, return_tensors="pt").input_ids.to(agent.device)
-
-    # 在生成时也使用 eval 模式
     agent.model.eval()
-    output_ids = agent.model.generate(
-        input_ids,
-        max_new_tokens=max_tokens,
-        do_sample=True,
-        top_k=50,
-        temperature=0.7,
-        pad_token_id=agent.tokenizer.eos_token_id  # 避免 pad token warning
-    )
-    agent.model.train() # 切回训练模式
-
-    # 解码并清洗文本
+    output_ids = agent.model.generate(input_ids, max_new_tokens=max_tokens, do_sample=True, top_k=50, temperature=0.7, pad_token_id=agent.tokenizer.eos_token_id)
+    agent.model.train()
     full_text = agent.tokenizer.decode(output_ids[0], skip_special_tokens=True)
-    description = full_text.replace(prompt, '').strip().split('\n')[0] # 只取第一行，避免生成多余内容
-    return description if description else f"a thing called {concept}" # 避免空描述
+    description = full_text.replace(prompt, '').strip().split('\n')[0]
+    return description if description else f"a thing called {concept}"
 
 # --- 初始化流程 ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
-print("Loading GPT-2...")
+# --- 扩展 GPT-2 Tokenizer 以处理中文 ---
+print("Loading data to collect Chinese vocabulary for GPT-2...")
+with open(DATA_FILE, 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+all_chinese_words = set()
+for sample in data:
+    all_chinese_words.add(sample['concept_chinese'])
+    all_chinese_words.update(sample['distractors_chinese'])
+all_chinese_chars = set(''.join(list(all_chinese_words)))
+new_chinese_tokens = list(all_chinese_words.union(all_chinese_chars))
+print(f"Found {len(new_chinese_tokens)} unique Chinese words/characters to add to GPT-2 tokenizer.")
+
+# 初始化 GPT-2 Agent
+print("Loading and configuring GPT-2...")
 gpt2_tokenizer = AutoTokenizer.from_pretrained(GPT2_MODEL_PATH)
 if gpt2_tokenizer.pad_token is None:
     gpt2_tokenizer.pad_token = gpt2_tokenizer.eos_token
+
+gpt2_tokenizer.add_tokens(new_chinese_tokens)
+print(f"GPT-2 tokenizer vocabulary extended. New size: {len(gpt2_tokenizer)}")
+
 gpt2_model = GPT2LMHeadModel.from_pretrained(GPT2_MODEL_PATH).to(device)
 gpt2_model.resize_token_embeddings(len(gpt2_tokenizer))
+print("GPT-2 model embedding layer resized.")
+
 gpt2_agent = Agent("GPT-2", gpt2_model, gpt2_tokenizer, LEARNING_RATE_GPT2, device)
 gpt2_agent.train_mode()
 
+# 初始化 CPM Agent
 print("Loading CPM...")
 cpm_tokenizer = AutoTokenizer.from_pretrained(CPM_MODEL_PATH)
 cpm_model_full = AutoModelForCausalLM.from_pretrained(CPM_MODEL_PATH).to(device)
 cpm_agent = Agent("CPM", cpm_model_full, cpm_tokenizer, LEARNING_RATE_CPM, device)
 cpm_agent.train_mode()
 
-print("Loading data...")
-with open(DATA_FILE, 'r', encoding='utf-8') as f:
-    data = json.load(f)
-
-# --- 主训练循环 ---
+# --- 主训练循环 (附带详细打印) ---
 log = []
 total_loss_sum = 0.0
 correct_count = 0
@@ -133,9 +124,6 @@ print(f"\n--- Starting {len(data) * 2} rounds of interaction (Verbose Mode) ---"
 for i, sample in enumerate(data):
     for turn in range(2):
         round_idx = i * 2 + turn + 1
-        # ====================================================================
-        # [INFO] START OF ROUND
-        # ====================================================================
         print(f"\n\n{'='*25} 游戏回合 {round_idx} {'='*25}")
 
         # --- 阶段 1: 角色分配与任务设置 ---
@@ -150,7 +138,6 @@ for i, sample in enumerate(data):
             concept_for_speaker = sample['concept_chinese']
             correct_option_for_listener = sample['concept_english']
             options_for_listener = sample['distractors_english'] + [correct_option_for_listener]
-
         print(f"    🗣️  Speaker: {speaker.name}")
         print(f"    👂  Listener: {listener.name}")
 
@@ -271,9 +258,6 @@ for i, sample in enumerate(data):
                 "correct_answer": correct_option_for_listener
             })
         log.append({"round": round_idx, "speaker": speaker.name, "correct": is_correct, "loss": total_loss.item()})
-        # 原有的简洁打印依然保留，方便快速浏览
-        # print(f"Round {round_idx}: Speaker={speaker.name}, Correct={is_correct}, Loss={total_loss.item():.4f}")
-
 
 # --- 总结与保存 ---
 total_games = len(data) * 2
