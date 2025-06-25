@@ -65,14 +65,35 @@ class Agent:
 
 # --- 辅助函数 ---
 def generate_description(concept: str, agent: Agent, max_tokens=30) -> str:
-    prompt = f"A short description of the concept '{concept}' is:"
+    # --- 【‼️ 关键修正 ‼️】根据Agent的类型，动态选择Prompt语言 ---
+    if agent.name == "GPT-2":
+        # 如果是英文Agent，使用英文Prompt
+        prompt = f"A short description of the concept '{concept}' is:"
+    elif agent.name == "CPM":
+        # 如果是中文Agent，使用中文Prompt
+        prompt = f"简单描述一下这个概念：{concept}\n描述："
+    else:
+        # 兜底，以防未来加入新的Agent
+        prompt = f"Describe: {concept}\n"
+
     input_ids = agent.tokenizer(prompt, return_tensors="pt").input_ids.to(agent.device)
+
+    # 在生成时也使用 eval 模式
     agent.model.eval()
-    output_ids = agent.model.generate(input_ids, max_new_tokens=max_tokens, do_sample=True, top_k=50, temperature=0.7, pad_token_id=agent.tokenizer.eos_token_id)
-    agent.model.train()
+    output_ids = agent.model.generate(
+        input_ids,
+        max_new_tokens=max_tokens,
+        do_sample=True,
+        top_k=50,
+        temperature=0.7,
+        pad_token_id=agent.tokenizer.eos_token_id
+    )
+    agent.model.train() # 切回训练模式
+
+    # 解码并清洗文本
     full_text = agent.tokenizer.decode(output_ids[0], skip_special_tokens=True)
     description = full_text.replace(prompt, '').strip().split('\n')[0]
-    return description if description else f"a thing called {concept}"
+    return description if description else f"一个叫做 {concept} 的东西" # 避免空描述
 
 # --- 初始化流程 ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
