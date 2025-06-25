@@ -65,20 +65,22 @@ class Agent:
 
 # --- 辅助函数 ---
 def generate_description(concept: str, agent: Agent, max_tokens=30) -> str:
-    # --- 【‼️ 关键修正 ‼️】根据Agent的类型，动态选择Prompt语言 ---
+    # --- 【‼️ 关键修正 ‼️】根据Agent的类型，动态选择更优的Prompt格式 ---
     if agent.name == "GPT-2":
-        # 如果是英文Agent，使用英文Prompt
+        # GPT-2 对这种指令式Prompt响应良好
         prompt = f"A short description of the concept '{concept}' is:"
     elif agent.name == "CPM":
-        # 如果是中文Agent，使用中文Prompt
-        prompt = f"简单描述一下这个概念：{concept}\n描述："
+        # 对于CPM，使用更像“文本补全”的格式，诱导其进行描述
+        # 格式1：最简单的补全
+        prompt = f"{concept}是"
+        # 格式2：稍微丰富的上下文
+        # prompt = f"关于“{concept}”的简单介绍：{concept}"
     else:
-        # 兜底，以防未来加入新的Agent
         prompt = f"Describe: {concept}\n"
 
     input_ids = agent.tokenizer(prompt, return_tensors="pt").input_ids.to(agent.device)
+    input_length = input_ids.shape[1] # 记录输入部分的长度
 
-    # 在生成时也使用 eval 模式
     agent.model.eval()
     output_ids = agent.model.generate(
         input_ids,
@@ -88,13 +90,15 @@ def generate_description(concept: str, agent: Agent, max_tokens=30) -> str:
         temperature=0.7,
         pad_token_id=agent.tokenizer.eos_token_id
     )
-    agent.model.train() # 切回训练模式
+    agent.model.train()
 
-    # 解码并清洗文本
-    full_text = agent.tokenizer.decode(output_ids[0], skip_special_tokens=True)
-    description = full_text.replace(prompt, '').strip().split('\n')[0]
-    return description if description else f"一个叫做 {concept} 的东西" # 避免空描述
+    # --- 【‼️ 关键修正 ‼️】使用更鲁棒的方式解码，避免复述Prompt ---
+    # 只解码生成的部分，而不是全部
+    generated_ids = output_ids[0][input_length:]
+    description = agent.tokenizer.decode(generated_ids, skip_special_tokens=True).strip()
 
+    return description if description else f"一个叫做 {concept} 的东西"
+    
 # --- 初始化流程 ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
