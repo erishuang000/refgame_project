@@ -1,0 +1,70 @@
+{
+  "config": {
+    "shared_dim": 768,
+    "gpt2_lr": 5e-06,
+    "cpm_lr": 2e-06,
+    "alignment_weight": 0.5
+  },
+  "summary": {
+    "accuracy": 0.0,
+    "avg_loss": 1.5007495284080505
+  },
+  "gpt2_error_log": [
+    {
+      "description": "It flies in the sky and carries people.",
+      "listener_chose": "橘子",
+      "correct": "飞机",
+      "round": 1
+    },
+    {
+      "description": "A common pet that says meow and likes to chase mice.",
+      "listener_chose": "沙发",
+      "correct": "猫",
+      "round": 3
+    }
+  ],
+  "cpm_error_log": [
+    {
+      "description": "它在天上飞，是用来载人的交通工具。",
+      "listener_chose": "teacher",
+      "correct": "airplane",
+      "round": 2
+    },
+    {
+      "description": "一种常见的宠物，会喵喵叫，喜欢抓老鼠。",
+      "listener_chose": "sofa",
+      "correct": "cat",
+      "round": 4
+    }
+  ],
+  "detailed_log": [
+    {
+      "round_idx": 1,
+      "speaker": "GPT-2",
+      "listener": "CPM",
+      "is_correct": false,
+      "total_loss": 1.487463116645813
+    },
+    {
+      "round_idx": 2,
+      "speaker": "CPM",
+      "listener": "GPT-2",
+      "is_correct": false,
+      "total_loss": 1.5018641948699951
+    },
+    {
+      "round_idx": 3,
+      "speaker": "GPT-2",
+      "listener": "CPM",
+      "is_correct": false,
+      "total_loss": 1.5115801095962524
+    },
+    {
+      "round_idx": 4,
+      "speaker": "CPM",
+      "listener": "GPT-2",
+      "is_correct": false,
+      "total_loss": 1.5020906925201416
+    }
+  ]
+}
