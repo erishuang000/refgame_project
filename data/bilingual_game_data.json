@@ -1,0 +1,20 @@
+[
+  {
+    "id": "concept_001",
+    "concept_english": "airplane",
+    "description_english": "It flies in the sky and carries people.",
+    "distractors_english": ["teacher", "orange", "school"],
+    "concept_chinese": "飞机",
+    "description_chinese": "它在天上飞，是用来载人的交通工具。",
+    "distractors_chinese": ["老师", "橘子", "学校"]
+  },
+  {
+    "id": "concept_002",
+    "concept_english": "cat",
+    "description_english": "A common pet that says meow and likes to chase mice.",
+    "distractors_english": ["dog", "sofa", "book"],
+    "concept_chinese": "猫",
+    "description_chinese": "一种常见的宠物，会喵喵叫，喜欢抓老鼠。",
+    "distractors_chinese": ["狗", "沙发", "书本"]
+  }
+]
