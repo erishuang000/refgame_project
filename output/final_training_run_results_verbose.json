@@ -9,31 +9,38 @@
     "temperature": 0.1
   },
   "summary": {
-    "accuracy": 25.0,
-    "avg_loss": 2.1150770783424377
+    "accuracy": 0.0,
+    "avg_loss": 2.2680793404579163
   },
   "gpt2_error_log": [
     {
       "round": 1,
       "speaker_concept": "airplane",
-      "description": "an object of motion, with the ability to fly under its own power.",
-      "listener_chose": "橘子",
+      "description": "\"An airplane is a mass of metal and a gas, with a lift produced by an engine. In the case of a gas, the",
+      "listener_chose": "老师",
       "correct_answer": "飞机"
+    },
+    {
+      "round": 3,
+      "speaker_concept": "cat",
+      "description": "a cat is a furry mammal with a short tail, which is not particularly useful for catching prey.",
+      "listener_chose": "沙发",
+      "correct_answer": "猫"
     }
   ],
   "cpm_error_log": [
     {
       "round": 2,
       "speaker_concept": "飞机",
-      "description": "3. While 'concept' is description of the",
+      "description": "'''''''''''''''",
       "listener_chose": "orange",
       "correct_answer": "airplane"
     },
     {
       "round": 4,
       "speaker_concept": "猫",
-      "description": "[1]诗词:泉,泉,泉",
-      "listener_chose": "book",
+      "description": "It's flannel work 'cats' 'cats",
+      "listener_chose": "sofa",
       "correct_answer": "cat"
     }
   ],
@@ -42,25 +49,25 @@
       "round": 1,
       "speaker": "GPT-2",
       "correct": false,
-      "loss": 2.130974054336548
+      "loss": 2.1876087188720703
     },
     {
       "round": 2,
       "speaker": "CPM",
       "correct": false,
-      "loss": 2.175787925720215
+      "loss": 2.263016939163208
     },
     {
       "round": 3,
       "speaker": "GPT-2",
-      "correct": true,
-      "loss": 1.9227406978607178
+      "correct": false,
+      "loss": 2.291963577270508
     },
     {
       "round": 4,
       "speaker": "CPM",
       "correct": false,
-      "loss": 2.2308056354522705
+      "loss": 2.329728126525879
     }
   ]
 }
