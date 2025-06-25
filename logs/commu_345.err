@@ -1,0 +1,10 @@
+The new embeddings will be initialized from a multivariate normal distribution that has old embeddings' mean and covariance. As described in this article: https://nlp.stanford.edu/~johnhew/vocab-expansion.html. To disable this, use `mean_resizing=False`
+Asking to truncate to max_length but no maximum length is provided and the model has no predefined maximum length. Default to no truncation.
+Building prefix dict from the default dictionary ...
+Dumping model to file cache /tmp/jieba.cache
+Loading model cost 0.487 seconds.
+Prefix dict has been built successfully.
+Traceback (most recent call last):
+  File "/ubsn/home/23063003r/refgame_project/scripts/commu_cpm_gpt_test.py", line 213, in <module>
+    alignment_loss = -F.cosine_similarity(speaker_desc_embedding, target_semantic_embedding).mean()
+RuntimeError: The size of tensor a (1600) must match the size of tensor b (2560) at non-singleton dimension 1
