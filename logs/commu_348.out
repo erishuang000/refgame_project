@@ -1,0 +1,17 @@
+🚀 作业开始于: Wed Jun 25 05:49:09 UTC 2025
+📌 节点: c03
+🔧 使用 CPU 核数: 8
+Using device: cpu
+Loading GPT-2...
+Loading CPM...
+Loading data...
+--- Starting 4 rounds of interaction ---
+Round 1: Speaker=GPT-2, Correct=False, Loss=2.2673
+Round 2: Speaker=CPM, Correct=False, Loss=2.1815
+Round 3: Speaker=GPT-2, Correct=False, Loss=2.2317
+Round 4: Speaker=CPM, Correct=False, Loss=2.1763
+
+--- Training Finished ---
+✅ Accuracy: 0.00% | Avg Loss: 2.2142
+📄 Results saved to /ubsnhome/23063003r/refgame_project/output/final_training_run_results.json
+✅ 作业结束于: Wed Jun 25 05:50:39 UTC 2025

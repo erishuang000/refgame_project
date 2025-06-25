@@ -1,0 +1,73 @@
+{
+  "config": {
+    "shared_dim": 768,
+    "gpt2_lr": 5e-06,
+    "cpm_lr": 2e-06,
+    "alignment_weight": 0.5,
+    "anti_align_weight": 0.5,
+    "contrastive_weight": 0.5,
+    "temperature": 0.1
+  },
+  "summary": {
+    "accuracy": 0.0,
+    "avg_loss": 2.214206039905548
+  },
+  "gpt2_error_log": [
+    {
+      "round": 1,
+      "speaker_concept": "airplane",
+      "description": "The term airplane is used to describe a structure, as in a plane.",
+      "listener_chose": "橘子",
+      "correct_answer": "飞机"
+    },
+    {
+      "round": 3,
+      "speaker_concept": "cat",
+      "description": "A cat is a creature that uses its claws and teeth to pry, to claw, to tear, to bite, etc.",
+      "listener_chose": "沙发",
+      "correct_answer": "猫"
+    }
+  ],
+  "cpm_error_log": [
+    {
+      "round": 2,
+      "speaker_concept": "飞机",
+      "description": "(2) '飞机'被用于' ' ' '",
+      "listener_chose": "teacher",
+      "correct_answer": "airplane"
+    },
+    {
+      "round": 4,
+      "speaker_concept": "猫",
+      "description": "【涅】1. 【涅】【涅",
+      "listener_chose": "sofa",
+      "correct_answer": "cat"
+    }
+  ],
+  "log": [
+    {
+      "round": 1,
+      "speaker": "GPT-2",
+      "correct": false,
+      "loss": 2.267343521118164
+    },
+    {
+      "round": 2,
+      "speaker": "CPM",
+      "correct": false,
+      "loss": 2.181469678878784
+    },
+    {
+      "round": 3,
+      "speaker": "GPT-2",
+      "correct": false,
+      "loss": 2.231703758239746
+    },
+    {
+      "round": 4,
+      "speaker": "CPM",
+      "correct": false,
+      "loss": 2.176307201385498
+    }
+  ]
+}
