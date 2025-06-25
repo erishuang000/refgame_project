@@ -1,0 +1,36 @@
+🚀 作业开始于: Tue Jun 24 15:25:27 UTC 2025
+📌 节点: c03
+🔧 使用 CPU 核数: 8
+✅ [1/31] Sentence trained. Loss = 3.2218
+✅ [2/31] Sentence trained. Loss = 2.2968
+✅ [3/31] Sentence trained. Loss = 2.9585
+✅ [4/31] Sentence trained. Loss = 2.1583
+✅ [5/31] Sentence trained. Loss = 2.5637
+✅ [6/31] Sentence trained. Loss = 5.2049
+✅ [7/31] Sentence trained. Loss = 2.9453
+✅ [8/31] Sentence trained. Loss = 2.6171
+✅ [9/31] Sentence trained. Loss = 2.8353
+✅ [10/31] Sentence trained. Loss = 3.5712
+✅ [11/31] Sentence trained. Loss = 3.2259
+✅ [12/31] Sentence trained. Loss = 2.6942
+✅ [13/31] Sentence trained. Loss = 2.6890
+✅ [14/31] Sentence trained. Loss = 2.6764
+✅ [15/31] Sentence trained. Loss = 5.5657
+✅ [16/31] Sentence trained. Loss = 0.4705
+✅ [17/31] Sentence trained. Loss = 3.6890
+✅ [18/31] Sentence trained. Loss = 4.4693
+✅ [19/31] Sentence trained. Loss = 4.5904
+✅ [20/31] Sentence trained. Loss = 4.3347
+✅ [21/31] Sentence trained. Loss = 4.3658
+✅ [22/31] Sentence trained. Loss = 3.0991
+✅ [23/31] Sentence trained. Loss = 3.4541
+✅ [24/31] Sentence trained. Loss = 2.5876
+✅ [25/31] Sentence trained. Loss = 3.4377
+✅ [26/31] Sentence trained. Loss = 3.3973
+✅ [27/31] Sentence trained. Loss = 3.8378
+✅ [28/31] Sentence trained. Loss = 3.8809
+✅ [29/31] Sentence trained. Loss = 4.1184
+✅ [30/31] Sentence trained. Loss = 3.0202
+✅ [31/31] Sentence trained. Loss = 2.1762
+✅ 所有句子学习完成，embedding 已保存到 embedding_after_each_sentence.json
+✅ 作业结束于: Tue Jun 24 16:08:16 UTC 2025

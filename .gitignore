@@ -1,2 +1,3 @@
 models/CPM-Generate/pytorch_model.bin
 *.bin
+embedding_after_each_sentence.json
