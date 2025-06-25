@@ -9,15 +9,30 @@
     "temperature": 0.1
   },
   "summary": {
-    "accuracy": 75.0,
-    "avg_loss": 1.8104406297206879
+    "accuracy": 25.0,
+    "avg_loss": 2.1238619685173035
   },
-  "gpt2_error_log": [],
+  "gpt2_error_log": [
+    {
+      "round": 1,
+      "speaker_concept": "airplane",
+      "description": "'A machine that flies through the air with the help of a pilot.'\n\nThe first airplane was invented by Dutch scientist Jan Van Leeuwen",
+      "listener_chose": "橘子",
+      "correct_answer": "飞机"
+    },
+    {
+      "round": 3,
+      "speaker_concept": "cat",
+      "description": "A cat is a mammal that has a short back with a long face.\n\nThe human form of the cat is the domestic cat.",
+      "listener_chose": "沙发",
+      "correct_answer": "猫"
+    }
+  ],
   "cpm_error_log": [
     {
       "round": 2,
       "speaker_concept": "飞机",
-      "description": "简单描述一下这个概念:飞机描述:物体:物体是飞机,但是物体的组成是物体的组成,比如物",
+      "description": "本书配有一张光盘,包括教程和大量的视频,用于读者的练习,同时也适合有一定",
       "listener_chose": "orange",
       "correct_answer": "airplane"
     }
@@ -26,26 +41,26 @@
     {
       "round": 1,
       "speaker": "GPT-2",
-      "correct": true,
-      "loss": 1.8681014776229858
+      "correct": false,
+      "loss": 2.3936994075775146
     },
     {
       "round": 2,
       "speaker": "CPM",
       "correct": false,
-      "loss": 1.9985857009887695
+      "loss": 2.111976385116577
     },
     {
       "round": 3,
       "speaker": "GPT-2",
-      "correct": true,
-      "loss": 1.7669060230255127
+      "correct": false,
+      "loss": 2.086001396179199
     },
     {
       "round": 4,
       "speaker": "CPM",
       "correct": true,
-      "loss": 1.6081693172454834
+      "loss": 1.9037706851959229
     }
   ]
 }
